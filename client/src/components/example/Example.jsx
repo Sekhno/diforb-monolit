@@ -2,6 +2,7 @@ import React from 'react';
 import { loadFile } from './utils';
 
 export const Example = () => {
+	// What is props?
 	const onPlayBtnClick = (props) => async () => {
 		const { player } = props;
 
