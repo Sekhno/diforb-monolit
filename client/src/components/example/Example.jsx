@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { loadFile } from './utils';
 
 export const Example = () => {
-
 	const [ volumeLevel, setVolumeLevel ] = useState(100);
 	const [ player, setPlayer ] = useState(null);
 	const [ loading, setLoading ] = useState(false);
@@ -11,6 +10,7 @@ export const Example = () => {
 
 	const onPlayBtnClick = async () => {
 		
+
 		try {
 			if(!player) {
 				setLoading(true);
