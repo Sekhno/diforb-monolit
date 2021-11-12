@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { loadFile } from './utils';
 
 export const Example = () => {
-	const onPlayBtnClick = (props) => async () => {
-		const { player } = props;
+	const [ volumeLevel, setVolumeLevel ] = useState(100);
+	const [ player, setPlayer ] = useState(null);
+	const [ loading, setLoading ] = useState(false);
+	const [ playState, setPlayState ] = useState('play')
+
+
+	const onPlayBtnClick = async () => {
+		
 
 		try {
 			if(!player) {
-				props.setLoading(true);
+				setLoading(true);
 				const frequencyC = document.querySelector('.frequency-bars');
 				const sinewaveC = document.querySelector('.sinewave');
 				const newPlayer = await loadFile({
@@ -18,19 +24,19 @@ export const Example = () => {
 					strokeStyle: 'rgb(251, 89, 17)', // line color
 					lineWidth: 1,
 					fftSize: 16384 // delization of bars from 1024 to 32768
-				}, props);
-				props.setLoading(false);
-				props.setPlayer(newPlayer);
+				}, {});
+				setLoading(false);
+				setPlayer(newPlayer);
 
-				return props.setPlayState('stop');
+				return setPlayState('stop');
 			}
 
 			player.play(0);
-			props.changeAudionState({ startedAt: Date.now() });
+			// props.changeAudionState({ startedAt: Date.now() });
 
-			return props.setPlayState('stop');
+			return setPlayState('stop');
 		} catch (e) {
-			props.setLoading(false);
+			setLoading(false);
 			console.log(e);
 		}
 	}
