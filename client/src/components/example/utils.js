@@ -19,6 +19,7 @@ const getAudioContext = () => {
 const loadFile = ({ frequencyC, sinewaveC }, styles, props) =>
   new Promise(async (resolve, reject) => {
     try {
+      console.log('loadFile');
       const { changeAudionState, setDuration } = props;
       let source = null;
       let playWhileLoadingDuration = 0;
@@ -140,11 +141,17 @@ const loadFile = ({ frequencyC, sinewaveC }, styles, props) =>
         gainNode.gain.setValueAtTime(level, audioContext.currentTime);
 
       // load file while socket
-      socket.emit("track", (e) => {});
+      
+      socket.emit("track", (e) => {
+        console.log('track')
+      });
+      
       ss(socket).on("track-stream", (stream, { stat }) => {
+        console.log('track-stream')
         let rate = 0;
         let isData = false;
         stream.on("data", async (data) => {
+          console.log('data')
           const audioBufferChunk = await audioContext.decodeAudioData(
             withWaveHeader(data, 2, 44100)
           );

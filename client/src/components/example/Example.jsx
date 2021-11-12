@@ -5,12 +5,15 @@ export const Example = () => {
 	const [ volumeLevel, setVolumeLevel ] = useState(100);
 	const [ player, setPlayer ] = useState(null);
 	const [ loading, setLoading ] = useState(false);
-	const [ playState, setPlayState ] = useState('play')
+	const [ playState, setPlayState ] = useState('play');
+	const [ duration, setDuration ] = useState(0);
+	const [ audionState, setAudionState ] = useState({
+		startedAt: null,
+		loadingProcess: 0
+	});
 
-
+	const changeAudionState = (newState) => setAudionState({ ...audionState, ...newState });
 	const onPlayBtnClick = async () => {
-		
-
 		try {
 			if(!player) {
 				setLoading(true);
@@ -24,7 +27,7 @@ export const Example = () => {
 					strokeStyle: 'rgb(251, 89, 17)', // line color
 					lineWidth: 1,
 					fftSize: 16384 // delization of bars from 1024 to 32768
-				}, {});
+				}, { changeAudionState, setDuration });
 				setLoading(false);
 				setPlayer(newPlayer);
 
