@@ -7,6 +7,7 @@ const app = express();
 const api = express();
 
 api.get('/track', (req, res, err) => {
+  
   // generate file path
   const filePath = path.resolve(__dirname, './private', './track.wav');
   // get file size info
@@ -42,10 +43,11 @@ const io = require('socket.io').listen(server, {
 });
 
 io.on('connection', client => {
-
+  console.log('connection')
   const stream = ss.createStream();
 
   client.on('track', () => {
+    console.log('track')
     const filePath = path.resolve(__dirname, './private', './track.wav');
     const stat = fileSystem.statSync(filePath);
     const readStream = fileSystem.createReadStream(filePath);
