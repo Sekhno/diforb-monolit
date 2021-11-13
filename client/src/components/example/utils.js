@@ -7,6 +7,7 @@ const url =
     ? `${window.location.hostname}:${window.location.port}`
     : `${window.location.hostname}:3001`;
 const socket = socketClient(url);
+console.log(url);
 
 const getAudioContext = () => {
   const AudioContext = window.AudioContext || window.webkitAudioContext;

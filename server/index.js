@@ -43,7 +43,6 @@ const io = require('socket.io').listen(server, {
 });
 
 io.on('connection', client => {
-  console.log('connection')
   const stream = ss.createStream();
 
   client.on('track', () => {
