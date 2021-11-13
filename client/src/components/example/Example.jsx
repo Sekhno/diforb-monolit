@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { loadFile } from './utils';
+import ss from 'socket.io-stream';
+import socketClient from "socket.io-client";
+
+const url =
+  process.env.NODE_ENV === "production"
+    ? `${window.location.hostname}:${window.location.port}`
+    : `${window.location.hostname}:3001`;
+const socket = socketClient(url);
+// import { loadFile } from './utils';
 
 export const Example = () => {
 	const [ volumeLevel, setVolumeLevel ] = useState(100);
@@ -13,35 +21,50 @@ export const Example = () => {
 	});
 
 	const changeAudionState = (newState) => setAudionState({ ...audionState, ...newState });
-	const onPlayBtnClick = async () => {
-		try {
-			if(!player) {
-				setLoading(true);
-				const frequencyC = document.querySelector('.frequency-bars');
-				const sinewaveC = document.querySelector('.sinewave');
-				const newPlayer = await loadFile({
-					frequencyC,
-					sinewaveC
-				}, {
-					fillStyle: 'rgb(250, 250, 250)', // background
-					strokeStyle: 'rgb(251, 89, 17)', // line color
-					lineWidth: 1,
-					fftSize: 16384 // delization of bars from 1024 to 32768
-				}, { changeAudionState, setDuration });
-				setLoading(false);
-				setPlayer(newPlayer);
+	const onPlayBtnClick = () => {
+		console.log('onPlayBtnClick')
+		socket.emit('track', () => {});
+   		ss(socket).on('track-stream', (stream, { stat }) => {
+			console.log('on track-stream')
+     		stream.on('data', (data) => {
+       			// calculate loading process rate
+       			const loadRate = (data.length * 100 ) / stat.size;
+				console.log('loadRate', loadRate)
+       			// onLoadProcess(loadRate);
+       			// next step here
+     		})
+		})
+	
+		// try {
+		// 	if(!player) {
+		// 		setLoading(true);
+		// 		const frequencyC = document.querySelector('.frequency-bars');
+		// 		const sinewaveC = document.querySelector('.sinewave');
+		// 		console.log('before getFile')
+		// 		const newPlayer = await loadFile({
+		// 			frequencyC,
+		// 			sinewaveC
+		// 		}, {
+		// 			fillStyle: 'rgb(250, 250, 250)', // background
+		// 			strokeStyle: 'rgb(251, 89, 17)', // line color
+		// 			lineWidth: 1,
+		// 			fftSize: 16384 // delization of bars from 1024 to 32768
+		// 		}, { changeAudionState, setDuration });
+		// 		console.log(newPlayer)
+		// 		setLoading(false);
+		// 		setPlayer(newPlayer);
 
-				return setPlayState('stop');
-			}
+		// 		return setPlayState('stop');
+		// 	}
 
-			player.play(0);
-			// props.changeAudionState({ startedAt: Date.now() });
+		// 	player.play(0);
+		// 	// props.changeAudionState({ startedAt: Date.now() });
 
-			return setPlayState('stop');
-		} catch (e) {
-			setLoading(false);
-			console.log(e);
-		}
+		// 	return setPlayState('stop');
+		// } catch (e) {
+		// 	setLoading(false);
+		// 	console.log(e);
+		// }
 	}
 	const onStopBtnClick = props => () => {
 		const { player } = props;
