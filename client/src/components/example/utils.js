@@ -7,7 +7,6 @@ const url =
     ? `${window.location.hostname}:${window.location.port}`
     : `${window.location.hostname}:3001`;
 const socket = socketClient(url);
-console.log(url);
 
 const getAudioContext = () => {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -20,8 +19,8 @@ const getAudioContext = () => {
 const loadFile = ({ frequencyC, sinewaveC }, styles, props) =>
   new Promise(async (resolve, reject) => {
     try {
-      console.log('loadFile');
       const { changeAudionState, setDuration } = props;
+      
       let source = null;
       let playWhileLoadingDuration = 0;
       let startAt = 0;
@@ -138,21 +137,16 @@ const loadFile = ({ frequencyC, sinewaveC }, styles, props) =>
       }, 500);
 
       const stop = () => source && source.stop(0);
-      const setVolume = (level) =>
-        gainNode.gain.setValueAtTime(level, audioContext.currentTime);
+      const setVolume = (level) => gainNode.gain.setValueAtTime(level, audioContext.currentTime);
 
       // load file while socket
       
-      socket.emit("track", (e) => {
-        console.log('track')
-      });
-      
+      socket.emit("track", (e) => {});
       ss(socket).on("track-stream", (stream, { stat }) => {
         console.log('track-stream')
         let rate = 0;
         let isData = false;
         stream.on("data", async (data) => {
-          console.log('data')
           const audioBufferChunk = await audioContext.decodeAudioData(
             withWaveHeader(data, 2, 44100)
           );
@@ -186,6 +180,7 @@ const loadFile = ({ frequencyC, sinewaveC }, styles, props) =>
     } catch (e) {
       reject(e);
     }
-  });
+  }
+);
 
 export { getAudioContext, loadFile };

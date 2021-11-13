@@ -44,7 +44,7 @@ const io = require('socket.io').listen(server, {
 
 io.on('connection', client => {
   const stream = ss.createStream();
-
+  
   client.on('track', () => {
     console.log('track')
     const filePath = path.resolve(__dirname, './private', './track.wav');
